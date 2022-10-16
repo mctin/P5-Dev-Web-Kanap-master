@@ -157,7 +157,7 @@ function createDescription(item) {
 function showArticle(article) {
   document.querySelector("#cart__items").appendChild(article);
 }
-//create artilce and add class cart__item add data set
+//create article and add class cart__item add data set
 function createArticle(item) {
   const article = document.createElement("article");
   article.classList.add("cart__item");
@@ -204,7 +204,7 @@ function submitForm(e) {
 }
 // regex for valid email address//
 function isEmailInvalid() {
-  const email = document.querySelector("#email").value;
+  const email = document.querySelector("#email").value
   const regex = /^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/;
   if (regex.test(email) === false) {
     alert("please add valid email");
