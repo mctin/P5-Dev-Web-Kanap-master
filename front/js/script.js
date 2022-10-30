@@ -2,7 +2,6 @@
 fetch("http://127.0.0.1:3000/api/products")
   .then((res) => res.json())
   .then((data) => {
-    console.log(data);
     return addProducts(data);
   });
  //adding products to page from fetch output//

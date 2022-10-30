@@ -13,7 +13,7 @@ fetch(`http://127.0.0.1:3000/api/products/${id}`)
   //to convert data const sofa array of ids and bringing in all create functions//
 function handleData(sofa) {
   const { altTxt, colors, description, imageUrl, name, price } = sofa;
-  itemPrice = price;
+ // itemPrice = price;
   imgUrl = imageUrl;
   altText = altTxt;
   articleName = name;
@@ -73,18 +73,17 @@ function clickForwarder() {
 }
 // collects data and revamps id to include color on id add item to storage //
 function saveOrder(color, quantity) {
-  const key = `${id} -${color}`;
+  const key = `${id}-${color}`;
   const data = {
     id: id,
     color: color,
-    price: itemPrice,
+   // price: itemPrice,//
     quantity: Number(quantity),
     imageUrl: imgUrl,
     altTxt: altText,
     name: articleName,
   };
-
-  localStorage.setItem(key, JSON.stringify(data));
+  localStorage.setItem(key,JSON.stringify(data));
 }
 //alert when no imput or only one input//
 function orderError(color, quantity) {

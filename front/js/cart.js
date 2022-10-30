@@ -1,5 +1,15 @@
-const cart = [];
-//get items from cache//
+const cart = []
+//adding price from backend//
+async function getprice(id){
+  let price = 0
+await fetch("http://127.0.0.1:3000/api/products/"+id)
+  .then((res) => res.json())
+  .then((data) => {
+    price = data.price
+})
+return price
+}
+//get items from localstorage
 getItemsFromCache();
 cart.forEach((item) => showItem(item));
 
@@ -7,7 +17,7 @@ cart.forEach((item) => showItem(item));
 const orderButton = document.querySelector("#order");
 orderButton.addEventListener("click", (e) => submitForm(e));
 
-//get items from cache 
+//get items from cache function
 function getItemsFromCache() {
   const numberOfItems = localStorage.length;
   for (let i = 0; i < numberOfItems; i++) {
@@ -17,11 +27,12 @@ function getItemsFromCache() {
   }
 }
 
-// funct to gather all functions to place item on page
-function showItem(item) {
+// funct to gather all functions to place item on page using Async and await
+async function showItem(item) {
   const article = createArticle(item);
   const div = createImageDiv(item);
   article.appendChild(div);
+  item.price = await getprice(item.id)
   const cardItemContent = createCartContent(item);
   article.appendChild(cardItemContent);
   showArticle(article);
@@ -38,9 +49,7 @@ function showTotalQuantity() {
 function showTotalPrice() {
   const totalPrice = document.querySelector("#totalPrice");
   const total = cart.reduce(
-    (total, item) => total + item.price * item.quantity,
-    0
-  );
+    (total, item) => total + item.price * item.quantity, 0);
   totalPrice.textContent = total;
 }
 //to add element and create class//
@@ -117,9 +126,7 @@ function addQuantityToSettings(settings, item) {
   input.max = "100";
   input.value = item.quantity;
   input.addEventListener("input", () =>
-    updatePriceAndQuantity(item.id, input.value, item)
-  );
-
+    updatePriceAndQuantity(item.id, input.value, item));
   quantity.appendChild(input);
   settings.appendChild(quantity);
 }
@@ -130,13 +137,13 @@ function updatePriceAndQuantity(id, newValue, item) {
   item.quantity = itemToUpdate.quantity;
   showTotalPrice();
   showTotalQuantity();
-  addNewDataToCache();
+  saveNewDataToCache(item);
 }
 // add new data to local storage == key split using id and color 
-function addNewDataToCache(item) {
-  const newdata = JSON.stringify(item);
-  const key = `${item.id}-${item.color}`;
-  localStorage.setItem(key, newdata);
+function saveNewDataToCache(item) {
+  const dataToSave = JSON.stringify(item);
+  const key =`${item.id}-${item.color}`;
+  localStorage.setItem(key, dataToSave);
 }
 // adding description to panier
 function createDescription(item) {
@@ -185,7 +192,10 @@ function submitForm(e) {
   }
   if (isFormInvalid()) return;
   if (isEmailInvalid()) return;
-// post request//
+  if (isVilleInvalid()) return;
+  if (isLastNameInvalid()) return;
+  if (isFirstNameInvalid()) return;
+
   const body = createRequestBody();
   fetch("http://localhost:3000/api/products/order", {
     method: "POST",
@@ -198,7 +208,6 @@ function submitForm(e) {
     .then((data) => {
       const orderId = data.orderId;
       window.location.href = "./confirmation.html" + "?orderId=" + orderId;
-      console.log(data);
     })
     .catch((err) => console.error(err));
 }
@@ -208,6 +217,36 @@ function isEmailInvalid() {
   const regex = /^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/;
   if (regex.test(email) === false) {
     alert("please add valid email");
+    return true;
+  }
+  return false;
+}
+
+// name  for valid nom and ville a//
+function isVilleInvalid() {
+  const nom = document.querySelector("#city").value 
+  const regex =/^[A-Za-z]+$/; 
+  if (regex.test(nom) === false) {
+    alert("please add valid city");
+    return true;
+  }
+  return false;
+}
+function isLastNameInvalid() {
+  const nom = document.querySelector("#lastName").value 
+  const regex =/^[A-Za-z]+$/; 
+  if (regex.test(nom) === false) {
+    alert("please add valid Last name");
+    return true;
+  }
+  return false;
+}
+
+function isFirstNameInvalid() {
+  const nom = document.querySelector("#firstName").value 
+  const regex =/^[A-Za-z]+$/; 
+  if (regex.test(nom) === false) {
+    alert("please add valid first name");
     return true;
   }
   return false;
@@ -242,7 +281,6 @@ function createRequestBody() {
     },
   products:getIdsFromCache()
   }
-  console.log("body",body);
   return body;
 }
 //get data from localstorage if change and split id where color was attacted//
@@ -251,7 +289,6 @@ function getIdsFromCache() {
   const ids = []
   for (let i = 0; i < numberOfProducts; i++) {
     const key = localStorage.key(i)
-    console.log(key, "key");
     const id = key.split(" -")[0]
     ids.push()
   }
