@@ -67,12 +67,11 @@ function clickForwarder() {
   const colors = document.querySelector("#colors").value;
   const quantity = document.querySelector("#quantity").value;
 
-  
   if (orderError(colors, quantity)) return;
   saveOrder(colors, quantity);
  addTocart();
 }
-//collects data and revamps id to include color on id add item to storage //
+//lects data and revamps id to include color on id add item to storage //
 function saveOrder(color, quantity) {
   const key = `${id}-${color}`;
   const data = {

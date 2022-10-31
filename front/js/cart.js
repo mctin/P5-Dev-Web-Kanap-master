@@ -126,7 +126,7 @@ function addQuantityToSettings(settings, item) {
   input.max = "100";
   input.value = item.quantity;
   input.addEventListener("input", () =>
-    updatePriceAndQuantity(item.id, input.value, item));
+    updatePriceAndQuantity(item.id, input.value, newValue, item));
   quantity.appendChild(input);
   settings.appendChild(quantity);
 }
@@ -190,11 +190,11 @@ function submitForm(e) {
     alert("please select some items to buy");
     return;
   }
-  if (isFormInvalid()) return;
-  if (isEmailInvalid()) return;
-  if (isVilleInvalid()) return;
-  if (isLastNameInvalid()) return;
-  if (isFirstNameInvalid()) return;
+  // if (isFormInvalid()) return;
+  // if (isEmailInvalid()) return;
+  // if (isVilleInvalid()) return;
+  // if (isLastNameInvalid()) return;
+  // if (isFirstNameInvalid()) return;
 
   const body = createRequestBody();
   fetch("http://localhost:3000/api/products/order", {
@@ -211,58 +211,121 @@ function submitForm(e) {
     })
     .catch((err) => console.error(err));
 }
-// regex for valid email address//
-function isEmailInvalid() {
-  const email = document.querySelector("#email").value
-  const regex = /^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/;
-  if (regex.test(email) === false) {
-    alert("please add valid email");
-    return true;
-  }
-  return false;
-}
 
-// name  for valid nom and ville a//
-function isVilleInvalid() {
-  const nom = document.querySelector("#city").value 
-  const regex =/^[A-Za-z]+$/; 
-  if (regex.test(nom) === false) {
-    alert("please add valid city");
-    return true;
-  }
-  return false;
-}
-function isLastNameInvalid() {
-  const nom = document.querySelector("#lastName").value 
-  const regex =/^[A-Za-z]+$/; 
-  if (regex.test(nom) === false) {
-    alert("please add valid Last name");
-    return true;
-  }
-  return false;
-}
+let emailRegExp = /^[a-zA-Z0-9.-_]+[@]{1}[a-zA-Z0-9.-_]+[.]{1}[a-z]{2,10}$/;
+let nameRegExp = /^[a-zA-Zéêëèîïâäçù ,'-]{3,20}$/;
+let addressRegExp = /^[0-9]{1,3}[a-zA-Zéêëèîïâäçù ,'-]+$/;
 
-function isFirstNameInvalid() {
-  const nom = document.querySelector("#firstName").value 
-  const regex =/^[A-Za-z]+$/; 
-  if (regex.test(nom) === false) {
-    prompt("please add valid first name");
-    return true;
-  }
-  return false;
-}
-// validation for form entry ensure all values have data//
-function isFormInvalid() {
-  const form = document.querySelector(".cart__order__form");
-  const inputs = form.querySelectorAll("input");
-  inputs.forEach((input) => {
-    if (input.value === "") {
-      alert("please fill all the fields");
-      return true;
+//Verify first name 
+firstName.addEventListener("input", function () {
+    verificationFirstName(firstName);
+});
+
+function verificationFirstName() {
+    let testFirstName = nameRegExp.test(firstName.value);
+    if (testFirstName == false) {
+        firstName.nextElementSibling.innerHTML = `First name cannot contain any numeros are special charactors`;
+        return false;
+    } else {
+        firstName.nextElementSibling.innerHTML = "";
+        return true;
     }
-    return false;
-  });
 }
+
+//Verif Nom de famille
+lastName.addEventListener("input", function () {
+    verificationLastName(lastName);
+});
+
+function verificationLastName() {
+    let testlastName = nameRegExp.test(lastName.value);
+    if (testlastName == false) {
+        lastName.nextElementSibling.innerHTML = `Cannot contain any numbers or special charactors`;
+        return false;
+    } else {
+        lastName.nextElementSibling.innerHTML = "";
+        return true;
+    }
+}
+
+//Verify city
+city.addEventListener("input", function () {
+    verificationCity(city);
+});
+
+function verificationCity() {
+    let testCity = nameRegExp.test(city.value);
+    if (testCity == false) {
+        city.nextElementSibling.innerHTML = `please put in a valid city, must not content numbers`;
+        return false;
+    } else {
+        city.nextElementSibling.innerHTML = "";
+        return true;
+    }
+}
+
+//Verif adresse
+address.addEventListener("change", function () {
+    verificationAddress(address);
+});
+
+function verificationAddress() {
+    let testAddress = addressRegExp.test(address.value);
+    if (testAddress == false) {
+        address.nextElementSibling.innerHTML = `Please input address i.e 10 rue de Paris`;
+        return false;
+    } else {
+        address.nextElementSibling.innerHTML = "";
+        return true;
+    }
+}
+
+//Verif Email
+email.addEventListener("change", function () {
+    verificationEmail(email);
+});
+
+function verificationEmail() {
+    let testEmail = emailRegExp.test(email.value);
+    if (testEmail == false && email.value != "") {
+        email.nextElementSibling.innerHTML = "Please input a valid email address";
+        return false;
+    } else {
+        email.nextElementSibling.innerHTML = "";
+        return true;
+    }
+}
+// function verificationFirstName() {
+//   let testFirstName = nameRegExp.test(firstName.value);
+//   if (testFirstName == false) {
+//       firstName.nextElementSibling.innerHTML = `Ne peut contenir de chiffres ou caractères spéciaux`;
+//       return false;
+//   } else {
+//       firstName.nextElementSibling.innerHTML = "";
+//       return true;
+//   }
+// }
+// function isFirstNameInvalid() {
+//   const nom = document.querySelector("#firstName").value 
+//   const regex =/^[A-Za-z]+$/; 
+//   if (regex.test(nom) === false) {
+//     prompt("please add valid first name");
+//     return true;
+//   }
+//   return false;
+// }
+// validation for form entry ensure all values have data//
+// function isFormInvalid() {
+//   const form = document.querySelector(".cart__order__form");
+//   const inputs = form.querySelectorAll("input");
+//   inputs.forEach((input) => {
+//     if (input.value === "") {
+//       alert("please fill all the fields");
+//       return true;
+//     }
+//     return false;
+//   });
+// }
 //body for post request 
 function createRequestBody() {
   const form = document.querySelector(".cart__order__form");
