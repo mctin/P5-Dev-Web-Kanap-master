@@ -21,9 +21,9 @@ orderButton.addEventListener("click", (e) => submitForm(e));
 function getItemsFromCache() {
   const numberOfItems = localStorage.length;
   for (let i = 0; i < numberOfItems; i++) {
-    const item = localStorage.getItem(localStorage.key(i)) || "";
+    const item = localStorage.getItem(localStorage.key(i)) || " ";
     const itemObject = JSON.parse(item);
-    cart.push(itemObject);
+   cart.push(itemObject);
   }
 }
 
@@ -246,7 +246,7 @@ function isFirstNameInvalid() {
   const nom = document.querySelector("#firstName").value 
   const regex =/^[A-Za-z]+$/; 
   if (regex.test(nom) === false) {
-    alert("please add valid first name");
+    prompt("please add valid first name");
     return true;
   }
   return false;
